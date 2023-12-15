@@ -1,0 +1,22 @@
+.form-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.content-box-1 {
+  width: 50%;
+  /* width: 50%; */
+  margin-left: 50px;
+}
+
+.content-box-2 {
+  width: 50%;
+
+  /* width: 50%; */
+}
+
+.content-box-1 > .image-container > img {
+  border-radius: 10px;
+}
