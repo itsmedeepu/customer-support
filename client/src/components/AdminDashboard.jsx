@@ -1,15 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Navbar from "./Navbar";
 
 function AdminDashboard() {
   const navigate = useNavigate();
 
-  if (!localStorage.getItem("token")) {
-    navigate("/login");
-    return null; // or a loading indicator while redirection occurs
-  }
+  useEffect((e) => {
+    if (
+      !localStorage.getItem("token") &&
+      localStorage.getItem("isLogged") !== "true"
+    ) {
+      navigate("/login");
+    } else {
+      navigate("/dashboard");
+    }
+  }, []);
 
-  return <>Welcome</>;
+  return (
+    <>
+      <Navbar />
+
+      <p>welcome to admin dashboard</p>
+    </>
+  );
 }
 
 export default AdminDashboard;

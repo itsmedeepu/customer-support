@@ -27,7 +27,9 @@ const AdminLogin = async (req, res) => {
     const admin = await AdminModel.findOne({ email: email });
 
     if (!admin) {
-      return res.status(200).json({ error: "Invalid login details" });
+      return res
+        .status(200)
+        .json({ error: "Invalid login details", status: 401 });
     }
 
     const isPasswordValid = await verifyPassword(password, admin.password);
@@ -42,15 +44,17 @@ const AdminLogin = async (req, res) => {
         },
         process.env.ADMIN_SECRET_KEY
       );
-      return res.status(200).json({ token });
+      return res.status(200).json({ token, status: 200 });
     }
 
-    return res.status(200).json({ error: "Invalid login details" });
+    return res
+      .status(200)
+      .json({ error: "Invalid login details", status: 401 });
   } catch (error) {
     console.error(error);
     return res
       .status(500)
-      .json({ error: "Something went wrong on the server" });
+      .json({ error: "Something went wrong on the server", status: 401 });
   }
 };
 

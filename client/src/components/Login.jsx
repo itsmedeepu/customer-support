@@ -3,12 +3,16 @@ import React, { useState } from "react";
 import "./css/Login.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [login, setLogin] = useState({
     email: "",
     password: "",
   });
+  const [password, setPassword] = useState(false);
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -24,18 +28,25 @@ function Login() {
     axios
       .post("http://localhost:3000/admin/api/v1/login", login)
       .then((response) => {
-        if (response) {
+        if (response.data.status === 200) {
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("isLogged", "true");
+          navigate("/dashboard");
         } else {
-          setErr;
+          //handle errors here
         }
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => {});
 
     setLoading(false);
+  };
+
+  const onClick = (e) => {
+    if (e.target.checked) {
+      setPassword(true);
+    } else {
+      setPassword(false);
+    }
   };
 
   return (
@@ -72,13 +83,16 @@ function Login() {
                   Enter Password
                 </label>
                 <input
-                  type="password"
+                  type={password ? "text" : "password"}
                   className="form-control"
                   id="password"
                   value={login.password}
                   name="password"
                   onChange={handleChange}
                 />
+              </div>
+              <div className="mb-3">
+                <input type="checkbox" onChange={onClick} /> Show password
               </div>
               <div className="mb-3">
                 <button
