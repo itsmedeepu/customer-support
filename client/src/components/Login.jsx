@@ -1,11 +1,26 @@
 import React, { useState } from "react";
-
 import "./css/Login.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import LoadingBar from "react-top-loading-bar";
-import { toast } from "react-toastify";
+
+import { ToastContainer, toast } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
+// minified version is also included
+// import 'react-toastify/dist/ReactToastify.min.css';
+
+function App() {
+  const notify = () => toast("Wow so easy !");
+
+  return (
+    <div>
+      <button onClick={notify}>Notify !</button>
+      <ToastContainer />
+    </div>
+  );
+}
 function Login() {
   const [login, setLogin] = useState({
     email: "",
@@ -21,10 +36,41 @@ function Login() {
     const name = e.target.name;
     const value = e.target.value;
 
+    if (value === "") {
+    }
+
     setLogin({ ...login, [name]: value });
   };
 
   const handleSubmit = async (e) => {
+    if (login.email === "") {
+      toast.error("Enter Email", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+
+        theme: "light",
+      });
+      return;
+    }
+    if (login.password === "") {
+      toast.error("Enter password", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+
+      return;
+    }
     setLoading(true);
     setProgress(30);
 
@@ -40,6 +86,16 @@ function Login() {
 
         navigate("/dashboard");
       } else {
+        toast.error("Invalid Credentials", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
         setProgress(100);
         setLoading(false);
       }
@@ -119,6 +175,7 @@ function Login() {
             </form>
           </div>
         </div>
+        <ToastContainer />
       </div>
     </>
   );
