@@ -5,11 +5,17 @@ const { AdminAuth } = require("../middleware/Auth");
 
 //contoller
 
-const { AdminLogin, RegisterAdmin } = require("../controllers/AdminContoller");
+const {
+  AdminLogin,
+  RegisterAdmin,
+  FetchData,
+} = require("../controllers/AdminContoller");
 
 router.post("/register", RegisterAdmin);
 
 router.post("/login", AdminLogin);
+
+router.get("/fetchdata", AdminAuth, FetchData);
 
 // router.get("/getallcust", Auth, getAllCustomers);
 // router.get("/findbyid/:id", Auth, findById);

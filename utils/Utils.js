@@ -68,10 +68,20 @@ const GenerateToken = (data) => {
   return token;
 };
 
+const Decode = (token) => {
+  try {
+    const data = jwt.verify(token, process.env.ADMIN_SECRET_KEY);
+    return data;
+  } catch (err) {
+    return err;
+  }
+};
+
 module.exports = {
   hashPassword,
   Checkuser,
   CheckIfcustomerPresent,
   GenerateToken,
   verifyPassword,
+  Decode,
 };

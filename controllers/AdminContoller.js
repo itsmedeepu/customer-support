@@ -2,7 +2,7 @@ const AdminModel = require("../models/AdminModel");
 
 const jwt = require("jsonwebtoken");
 
-const { verifyPassword, hashPassword } = require("../utils/Utils");
+const { verifyPassword, hashPassword, Decode } = require("../utils/Utils");
 
 const RegisterAdmin = async (req, res) => {
   try {
@@ -18,6 +18,10 @@ const RegisterAdmin = async (req, res) => {
   } catch {
     return res.status(500).json({ error: "something went bad at server" });
   }
+};
+
+const FetchData = async (req, res) => {
+  return res.status(200).json(req.data);
 };
 
 const AdminLogin = async (req, res) => {
@@ -58,4 +62,4 @@ const AdminLogin = async (req, res) => {
   }
 };
 
-module.exports = { RegisterAdmin, AdminLogin };
+module.exports = { RegisterAdmin, AdminLogin, FetchData };

@@ -27,16 +27,6 @@ function Login() {
   const handleSubmit = async (e) => {
     setLoading(true);
     setProgress(30);
-    toast.warn("🦄 Wow so easy!", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
 
     try {
       const response = await axios.post(

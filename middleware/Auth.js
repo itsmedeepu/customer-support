@@ -24,6 +24,7 @@ const AdminAuth = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.ADMIN_SECRET_KEY);
     req.admin = decoded;
+    req.data = decoded;
     next();
   } catch (err) {
     return res.status(403).json({ error: "Invalid token or token expired" });
