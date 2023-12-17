@@ -4,7 +4,8 @@ import "./css/Login.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import LoadingBar from "react-top-loading-bar";
+import { toast } from "react-toastify";
 function Login() {
   const [login, setLogin] = useState({
     email: "",
@@ -14,6 +15,7 @@ function Login() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -22,23 +24,36 @@ function Login() {
     setLogin({ ...login, [name]: value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
     setLoading(true);
-    axios
-      .post("http://localhost:3000/admin/api/v1/login", login)
-      .then((response) => {
-        if (response.data.status === 200) {
-          localStorage.setItem("token", response.data.token);
-          localStorage.setItem("isLogged", "true");
-          navigate("/dashboard");
-        } else {
-          //handle errors here
-        }
-      })
-      .catch((e) => {});
+    setProgress(30);
+    toast.warn("🦄 Wow so easy!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
 
-    setLoading(false);
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/admin/api/v1/login",
+        login
+      );
+
+      if (response.data.status === 200) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("isLogged", "true");
+
+        navigate("/dashboard");
+      } else {
+        setProgress(100);
+        setLoading(false);
+      }
+    } catch {}
   };
 
   const onClick = (e) => {
@@ -51,6 +66,11 @@ function Login() {
 
   return (
     <>
+      <LoadingBar
+        color="#f11946"
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
       <div className="container">
         <div className="card col-lg-6 m-auto mt-5">
           <div className="card-header text-center bg-info text-white ">
@@ -100,12 +120,12 @@ function Login() {
                   className="btn btn-sm btn-primary col-lg-12"
                   onClick={handleSubmit}
                 >
-                  Login {loading ? "logging in" : ""}
+                  {loading ? "Logging in" : "Login"}
                 </button>
               </div>
-              <div className="mb-3 ">
+              {/* <div className="mb-3 col-lg-12 col-md-12 col-sm-12 ">
                 <Link to="/forgotpassword">Forgot password ?</Link>
-              </div>
+              </div> */}
             </form>
           </div>
         </div>

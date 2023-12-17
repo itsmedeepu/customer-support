@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 
 function AdminDashboard() {
@@ -11,15 +11,20 @@ function AdminDashboard() {
       localStorage.getItem("isLogged") !== "true"
     ) {
       navigate("/login");
-    } else {
-      navigate("/dashboard");
     }
   }, []);
 
+  const handleLogout = (e) => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("isLogged");
+    navigate("/login");
+  };
+
   return (
     <>
-      <Navbar />
-
+      <button type="btn-sm btn-danger" onClick={handleLogout}>
+        Logout
+      </button>
       <p>welcome to admin dashboard</p>
     </>
   );
