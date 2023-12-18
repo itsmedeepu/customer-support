@@ -8,6 +8,12 @@ const {
   verifyPassword,
 } = require("../utils/Utils");
 
+const {
+  sucessWithdata,
+  successwithoutdata,
+  errorresponse,
+} = require("../helpers/responseStructure");
+
 const Register = async (req, res) => {
   const Customer = req.body;
 
@@ -18,19 +24,23 @@ const Register = async (req, res) => {
   if (isUserDataValid) {
     const Customerdata = await CheckIfcustomerPresent(Customer);
     if (Customerdata)
-      return res.status(200).json("customer already present with this details");
+      return res
+        .status(200)
+        .json(errorresponse(401, "customer already registred"));
 
     try {
       Customer.password = await hashPassword(Customer.password);
       const newCustomer = new CustomerModel(Customer);
       const user = await newCustomer.save();
 
-      res.status(201).json({ user });
+      res
+        .status(201)
+        .json(sucessWithdata(200, "user regsitred sucessfully", user));
     } catch (e) {
-      res.status(500).json("Something went bad at the server");
+      res.status(500).json(errorresponse(500, "something went bad at server"));
     }
   } else {
-    res.status(500).json("Some fields are missing");
+    res.status(200).json(errorresponse(401, "provide all details"));
   }
 };
 
@@ -45,14 +55,18 @@ const Login = async (req, res) => {
       );
       if (checkPassword) {
         const token = GenerateToken(Customer);
-        return res.status(200).json({ token: token });
+        return res
+          .status(200)
+          .json(sucessWithdata(200, "login success", { token }));
       }
 
-      return res.status(200).json({ error: "invalid login details" });
+      return res.status(200).json(errorresponse(401, "invalid login details"));
     }
-    return res.status(200).json({ error: "invalid login details" });
+    return res.status(200).json(errorresponse(401, "invalid login details"));
   } catch {
-    return res.status(500).json({ error: "something went bad at server" });
+    return res
+      .status(500)
+      .json(errorresponse(500, "something went bad at server"));
   }
 };
 
@@ -60,10 +74,12 @@ const getAllCustomers = async (req, res) => {
   try {
     const customers = await CustomerModel.find({}, { password: 0 });
 
-    res.status(200).json({ customers });
+    res
+      .status(200)
+      .json(sucessWithdata(200, "data fecthed sucessfully", customers));
   } catch (error) {
     console.error(error);
-    res.status(500).json("Something went wrong on the server");
+    res.status(500).json(errorresponse(500, "something went bad at server"));
   }
 };
 
@@ -75,12 +91,14 @@ const findById = async (req, res) => {
     );
 
     if (Customer) {
-      return res.status(200).json({ Customer });
+      return res
+        .status(200)
+        .json(sucessWithdata(200, "fetched sucessfully", Customer));
     }
 
-    return res.status(200).json("user not found with this id");
+    return res.status(200).json(successwithoutdata(200, "no users found"));
   } catch (e) {
-    res.status(500).json("Something went wrong on the server");
+    res.status(500).json(errorresponse(500, "something went bad at server"));
   }
 };
 
@@ -92,13 +110,15 @@ const updateCustomer = async (req, res) => {
       password: 0,
     })
       .then((data) => {
-        res.status(200).json({ data });
+        res.status(200).json(sucessWithdata(200, "login success", data));
       })
       .catch((e) => {
-        res.status(500).json("user not found");
+        res
+          .status(500)
+          .json(errorresponse(500, "something went bad at server"));
       });
   } catch {
-    res.status(500).json("user not found");
+    res.status(500).json(errorresponse(401, "customer not found"));
   }
 };
 
@@ -110,12 +130,16 @@ const deletecustomer = async (req, res) => {
     );
 
     if (Customer) {
-      return res.status(200).json({ Customer });
+      return res
+        .status(200)
+        .json(sucessWithdata(200, "customer deleted", Customer));
     }
 
-    return res.status(200).json("user not found with this id");
+    return res
+      .status(200)
+      .json(errorresponse(401, "user not found with this id"));
   } catch (e) {
-    res.status(500).json("Something went wrong on the server");
+    res.status(500).json(errorresponse(500, "something went bad at server"));
   }
 };
 

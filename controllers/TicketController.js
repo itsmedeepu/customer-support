@@ -1,3 +1,7 @@
+const {
+  sucessWithdata,
+  errorresponse,
+} = require("../helpers/responseStructure");
 const TicketModel = require("../models/TicketModel");
 const jwt = require("jsonwebtoken");
 // const {
@@ -16,13 +20,15 @@ const Ticket = async (req, res) => {
     await newticket
       .save()
       .then((data) => {
-        res.status(200).json({ data });
+        res.status(200).json(sucessWithdata(200, "ticket raised sucessfully"));
       })
       .catch((e) => {
-        res.status(500).json({ error: "something went bad at server" });
+        res
+          .status(500)
+          .json(errorresponse(500, "soemthing went bad at server"));
       });
   } catch {
-    res.staus(500).json({ error: "something went bad at server" });
+    res.staus(500).json(errorresponse(500, "something went bad at server"));
   }
 };
 
@@ -30,9 +36,11 @@ const getAllTickets = async (req, res) => {
   try {
     const tickets = await TicketModel.find({});
 
-    res.status(200).json({ tickets });
+    res
+      .status(200)
+      .json(sucessWithdata(200, "tickets fetched sucessfully", tickets));
   } catch (error) {
-    res.status(500).json({ error: "Something went wrong on the server" });
+    res.status(500).json(errorresponse(500, "something went bad server"));
   }
 };
 
@@ -41,12 +49,16 @@ const findTicketById = async (req, res) => {
     const Ticket = await TicketModel.findOne({ _id: req.params.id });
 
     if (Ticket) {
-      return res.status(200).json({ Ticket });
+      return res
+        .status(200)
+        .json(sucessWithdata(200, "tickets fetched sucessfully", Ticket));
     }
 
-    return res.status(200).json({ error: "ticket not found with this id" });
+    return res.status(200).json(errorresponse(500, "ticket not found"));
   } catch (e) {
-    res.status(500).json({ error: "Something went wrong on the server" });
+    res
+      .status(500)
+      .json(errorresponse(500, "something went bad at server side"));
   }
 };
 

@@ -72,12 +72,19 @@ function Login() {
       return;
     }
     setLoading(true);
-    setProgress(30);
+    setProgress(20);
 
     try {
       const response = await axios.post(
         "http://localhost:3000/admin/api/v1/login",
-        login
+        login,
+        {
+          onUploadProgress: (progressEvent) => {
+            const { loaded, total } = progressEvent;
+            const percentCompleted = Math.round((loaded * 100) / total);
+            setProgress(percentCompleted);
+          },
+        }
       );
 
       if (response.data.status === 200) {
@@ -99,7 +106,20 @@ function Login() {
         setProgress(100);
         setLoading(false);
       }
-    } catch {}
+    } catch {
+      setProgress(100);
+      setLoading(false);
+      toast.warn("Server  error ", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
   };
 
   const onClick = (e) => {

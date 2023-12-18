@@ -1,0 +1,26 @@
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  flex-direction: row;
+}
+
+.navbar {
+  background-color: #ac4747;
+  color: #fff;
+  width: 200px;
+  padding: 20px;
+}
+
+/* .navbar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.navbar ul li {
+  margin-bottom: 10px;
+} */
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+}

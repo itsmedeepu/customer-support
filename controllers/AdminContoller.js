@@ -4,19 +4,27 @@ const jwt = require("jsonwebtoken");
 
 const { verifyPassword, hashPassword, Decode } = require("../utils/Utils");
 
+const {
+  sucessWithdata,
+  successwithoutdata,
+  errorresponse,
+} = require("../helpers/responseStructure");
+
 const RegisterAdmin = async (req, res) => {
   try {
     req.body.password = await hashPassword(req.body.password);
     const Admin = new AdminModel(req.body);
     await Admin.save()
       .then((data) => {
-        res.status(200).json({ data });
+        res.status(200).json(sucessWithdata(200, "registration scucessfull"));
       })
       .catch((e) => {
-        res.status(200).json({ error: "provide all details" });
+        res.status(200).json(errorresponse(401, "provide all details"));
       });
   } catch {
-    return res.status(500).json({ error: "something went bad at server" });
+    return res
+      .status(500)
+      .json(errorresponse(500, "something went bad at server"));
   }
 };
 
@@ -31,9 +39,7 @@ const AdminLogin = async (req, res) => {
     const admin = await AdminModel.findOne({ email: email });
 
     if (!admin) {
-      return res
-        .status(200)
-        .json({ error: "Invalid login details", status: 401 });
+      return res.status(200).json(errorresponse(401, "invalid login details"));
     }
 
     const isPasswordValid = await verifyPassword(password, admin.password);
@@ -48,17 +54,16 @@ const AdminLogin = async (req, res) => {
         },
         process.env.ADMIN_SECRET_KEY
       );
-      return res.status(200).json({ token, status: 200 });
+      return res
+        .status(200)
+        .json(sucessWithdata(200, "login sucessfully", { token }));
     }
 
-    return res
-      .status(200)
-      .json({ error: "Invalid login details", status: 401 });
+    return res.status(200).json(errorresponse(401, "invalid credentials"));
   } catch (error) {
-    console.error(error);
     return res
       .status(500)
-      .json({ error: "Something went wrong on the server", status: 401 });
+      .json(errorresponse(500, "something went bad at server"));
   }
 };
 
