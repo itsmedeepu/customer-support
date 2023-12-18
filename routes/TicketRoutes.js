@@ -9,13 +9,16 @@ const {
   Ticket,
   getAllTickets,
   findTicketById,
+  UpdateTicket,
 } = require("../controllers/TicketController");
 
 router.post("/ticket", AuthToken, Ticket);
 
-router.post("/gettickets", AdminAuth, getAllTickets);
+router.get("/gettickets", AdminAuth, getAllTickets);
 
 router.get("/findticket", AdminAuth, findTicketById);
+
+router.put("/updateticket/:id", AdminAuth, UpdateTicket);
 
 //configure the middle ware based on token
 

@@ -4,14 +4,6 @@ const {
 } = require("../helpers/responseStructure");
 const TicketModel = require("../models/TicketModel");
 const jwt = require("jsonwebtoken");
-// const {
-//   hashPassword,
-//   Checkuser,
-//   CheckIfcustomerPresent,
-//   GenerateToken,
-//   verifyPassword,
-// } = require("../utils/Utils");
-
 const Ticket = async (req, res) => {
   const ticket = req.body;
 
@@ -25,7 +17,7 @@ const Ticket = async (req, res) => {
       .catch((e) => {
         res
           .status(500)
-          .json(errorresponse(500, "soemthing went bad at server"));
+          .json(errorresponse(500, "something went bad at server"));
       });
   } catch {
     res.staus(500).json(errorresponse(500, "something went bad at server"));
@@ -62,4 +54,30 @@ const findTicketById = async (req, res) => {
   }
 };
 
-module.exports = { findTicketById, getAllTickets, Ticket };
+const UpdateTicket = async (req, res) => {
+  const data = req.body;
+
+  try {
+    const update = await TicketModel.findByIdAndUpdate(
+      { _id: req.params.id },
+      data,
+      {
+        new: true,
+        password: 0,
+      }
+    );
+    if (update) {
+      return res
+        .status(200)
+        .json(sucessWithdata(200, "ticket updated sucessfully", update));
+    } else {
+      return res.status(500).json(errorresponse(500, "something went bad "));
+    }
+  } catch (e) {
+    return res
+      .status(500)
+      .json(errorresponse(500, "something went bad at server side"));
+  }
+};
+
+module.exports = { findTicketById, getAllTickets, Ticket, UpdateTicket };

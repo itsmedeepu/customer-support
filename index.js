@@ -2,6 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger-output.json");
 
 const cors = require("cors");
 
@@ -22,6 +24,8 @@ app.use(express.urlencoded({ extended: true }));
 const customer_route = require("./routes/CustomerRoutes");
 const ticket_route = require("./routes/TicketRoutes");
 const admin_route = require("./routes/AdminRoutes");
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use("/customer/api/v1", customer_route);
 
